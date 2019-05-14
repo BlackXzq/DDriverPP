@@ -8,7 +8,20 @@ class HomePage extends StatelessWidget {
 
 
   void _getSchedulsList() {
-    SchedulsRequest.getScheduls(pageNo: '1', driverStatus: '1');
+    SchedulsRequest.getScheduls(
+      pageNo: '1',
+      driverStatus: '1',
+      onSucceed: (lists) {
+        print('---------------------------');
+        lists.forEach((entity) {
+          print(entity.carTotalNumber);
+        });
+        print('---------------------------');
+      },
+      onFailed: (notice) {
+
+      }
+    );
   }
 
   @override

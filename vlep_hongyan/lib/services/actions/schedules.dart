@@ -12,7 +12,7 @@ class SchedulsRequest {
     @required String pageNo,
     int pageSize,
     String scheduleNumber,
-    void Function(String) onSucceed,
+    void Function(List<ScheduleEntity>) onSucceed,
     void Function(NoticeEntity) onFailed
   }) async {
     final response = await VLEPServices().post(
@@ -26,11 +26,8 @@ class SchedulsRequest {
     );
 
     if (response.repCode == 200) {
-      final list = response.repData['list'];
-      print('+++++++++++++++++++++++++++++');
-      print(list);
-      print('+++++++++++++++++++++++++++++');
-      if (onSucceed != null) onSucceed(response.repMsg);
+      final schedules = Schedule.fromJson(response.repData);
+      if (onSucceed != null) onSucceed(schedules.list);
       VLEPToast.showToast(msg: response.repMsg);
     } else {
       if (onFailed != null) onFailed(NoticeEntity(message: response.repMsg));
