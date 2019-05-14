@@ -8,20 +8,20 @@ import '../../utils/utils.dart';
 class SchedulsRequest {
 
   static Future getScheduls({
-    @required String pageNo,
-    String pageSize,
-    String scheduleNumber,
     @required String driverStatus,
+    @required String pageNo,
+    int pageSize,
+    String scheduleNumber,
     void Function(String) onSucceed,
     void Function(NoticeEntity) onFailed
   }) async {
     final response = await VLEPServices().post(
       '/vlep-business/shipping/schedules',
       data: {
+        'driverStatus': driverStatus,
         'pageNo': pageNo,
-        'pageSize': pageSize ?? '10',
+        'pageSize': pageSize ?? 10,
         'scheduleNumber': scheduleNumber ?? '',
-        'driverStatus': driverStatus
       },
     );
 

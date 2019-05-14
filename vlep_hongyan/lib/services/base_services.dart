@@ -55,12 +55,6 @@ class VLEPServices {
     baseParams['username'] = username;
     baseParams['sign'] = _getSign(data, time, token);
     baseParams['time'] = time;
-    print(data);
-    final vlau = jsonLiteralAsDart(data);
-    print('=========================');
-    print(vlau);
-    print('=========================');
-
     _client.options.method = method;
     var response = Response();
 
@@ -92,11 +86,8 @@ class VLEPServices {
 
   //生成签名
   String _getSign(dynamic repData, String timeStr, String tokenStr) {
-    final dataStr = jsonLiteralAsDart(repData);
-    final sign = "reqData" + dataStr + "time" + timeStr + "token" + tokenStr;
-    print('================ sign ======================');
-    print(sign);
-    print('================ sign ======================');
+    final data = jsonLiteralAsDart(repData);
+    final sign = "reqData" + data + "time" + timeStr + "token" + tokenStr;
     return Md5(sign);
   }
 
