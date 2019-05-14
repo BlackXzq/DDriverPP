@@ -8,7 +8,7 @@ import '../../utils/utils.dart';
 
 class LoginRequest {
 
-  static Future<UserEntity> sendMessage({
+  static Future sendMessage({
     @required String phoneNum,
     void Function(String) onSucceed,
     void Function(NoticeEntity) onFailed
@@ -67,7 +67,7 @@ class LoginRequest {
       '/auth-business/auth/sms/mobile/login',
       data: {
         'mobile': phoneNum,
-        'password': Utils.Md5(password),
+        'password': Md5(password),
         'loginType': '1'
       },
     );

@@ -107,7 +107,6 @@ class __BodyState extends State<_Body> {
   }
   //登录 按键
   void _submitLogin() async {
-
     _formKey.currentState.save();
 
     if (_userName.length != 11) {

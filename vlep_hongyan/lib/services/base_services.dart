@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../utils/config.dart';
+import '../utils/utils.dart';
 
 part 'base_services.g.dart';
 
@@ -43,18 +43,23 @@ class VLEPServices {
     }
   ) async {
 
-    var token = '';
-    var userId = '';
-    var username = '';
-    var sign = '';
-    var time = '';
+    var token = ShareUserManager.userEntity.token;
+    var userId = ShareUserManager.userEntity.userId;
+    var username = ShareUserManager.userEntity.username;
+    var sign = ShareUserManager.userEntity.token;
+    var time = (DateTime.now().millisecondsSinceEpoch).toString();
     var baseParams = Map<String, dynamic>();
     baseParams['reqData'] = data;
     baseParams['token'] = token;
     baseParams['userId'] = userId;
     baseParams['username'] = username;
-    baseParams['sign'] = sign;
+    baseParams['sign'] = _getSign(data, time, token);
     baseParams['time'] = time;
+    print(data);
+    final vlau = jsonLiteralAsDart(data);
+    print('=========================');
+    print(vlau);
+    print('=========================');
 
     _client.options.method = method;
     var response = Response();
@@ -83,6 +88,16 @@ class VLEPServices {
         repMsg: response.statusCode.toString(),
       );
     }
+  }
+
+  //生成签名
+  String _getSign(dynamic repData, String timeStr, String tokenStr) {
+    final dataStr = jsonLiteralAsDart(repData);
+    final sign = "reqData" + dataStr + "time" + timeStr + "token" + tokenStr;
+    print('================ sign ======================');
+    print(sign);
+    print('================ sign ======================');
+    return Md5(sign);
   }
 
   Future<ApiResponse> get(String path, {Map<String, dynamic> data}) async {

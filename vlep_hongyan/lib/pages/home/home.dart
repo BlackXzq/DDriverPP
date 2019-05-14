@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../utils/utils.dart';
+import '../../services/services.dart';
 
 class HomePage extends StatelessWidget {
 
   final content = '${ShareUserManager.userEntity.userId} : ${ShareUserManager.userEntity.token} : ${ShareUserManager.userEntity.username}';
+
+
+  void _getSchedulsList() {
+    SchedulsRequest.getScheduls(pageNo: '1', driverStatus: '1');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,10 @@ class HomePage extends StatelessWidget {
               },
               child: Text('退出登录'),
             ),
-//            Text(content)
+            RaisedButton(
+              onPressed: _getSchedulsList,
+              child: Text('获取信息列表'),
+            ),
           ],
         ),
       ),
