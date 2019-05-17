@@ -26,7 +26,7 @@ class VLEPTheme {
   static get titleColor => Color(0xFF333333); //标题颜色
   static get bodyColor => Color(0xFF3A3A3A); //正文颜色
   static get decColor => Color(0xFF999999);//内容是描述颜色
-  static get primaryColor => Color(0xFF7192FD); //button 背景等主题颜色
+  static get primaryColor => Color(0xFF7986E1); //button 背景等主题颜色
   
   static get blackLighter => Colors.black26;
   static get blackLight => Colors.black54;
@@ -41,9 +41,10 @@ class VLEPTheme {
   static ThemeData get theme {
     if (_theme == null || VLEPConfig.debug) {
       _theme = ThemeData(
-        primarySwatch: Colors.lightBlue,
         brightness: Brightness.light,
         buttonColor: primaryColor,
+        accentColor: Colors.white,
+        primaryColor: VLEPTheme.primaryColor,
       );
     }
     return _theme;

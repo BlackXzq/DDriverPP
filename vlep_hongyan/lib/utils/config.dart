@@ -1,5 +1,6 @@
 import 'package:package_info/package_info.dart';
 import 'dart:async';
+import 'package:logging/logging.dart';
 
 
 enum AJNetworkDebugMode {
@@ -14,8 +15,7 @@ class VLEPConfig {
   static var servicesDebugMode = AJNetworkDebugMode.developer; //网络服务请求环境配置
   static var debug = false; //log、mock数据等。。。调试开关配置
   static PackageInfo packageInfo; //获取包信息
-
-  static var isLogined = false;
+  static var loggerLevel = Level.ALL; //打印等级
 
   static get baseUrl {
     switch (servicesDebugMode) {

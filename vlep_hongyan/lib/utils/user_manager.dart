@@ -17,18 +17,12 @@ class ShareUserManager {
   factory ShareUserManager() {
     if (_instance == null) {
       _instance = ShareUserManager._();
-      _instance.deleteUserEntity();
-      _instance._getUserEntity();
     }
     return _instance;
   }
 
-  ///获取user对象
-  static UserEntity get userEntity => ShareUserManager()._user;
-
   //存储 user 信息
   void saveUserEntity(UserEntity user) async {
-
     _user = user;
 
     final prefs = await SharedPreferences.getInstance();
@@ -41,20 +35,24 @@ class ShareUserManager {
   //退出登录时候 删除用户信息
   void deleteUserEntity() async {
     final user = UserEntity();
-    _user = user;
     saveUserEntity(user);
   }
 
-  void _getUserEntity() async {
+  Future<UserEntity> getUserEntity() async {
+
+    if (_user.token.isNotEmpty) {
+      return _user;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     UserEntity user = UserEntity();
-    user.userId = prefs.getInt(userIdKey) ?? '';
+    user.userId = prefs.getInt(userIdKey) ?? -1;
     user.token = prefs.getString(tokenKey) ?? '';
     user.username = prefs.getString(usernameKey) ?? '';
     user.type = prefs.getInt(typeKey) ?? -1;
-    user.customerType = prefs.getInt(customerTypeKey) ?? '';
-
+    user.customerType = prefs.getInt(customerTypeKey) ?? -1;
     _user = user;
+    return user;
   }
 
 

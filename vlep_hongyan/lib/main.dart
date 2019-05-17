@@ -7,6 +7,7 @@ import 'app.dart';
 void main() {
   PackageInfo.fromPlatform().then((packageInfo) {
     VLEPConfig.packageInfo = packageInfo;
+
     ShareUserManager();
 
     runApp(VLEPApp());

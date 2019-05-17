@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
 
 import 'pages/pages.dart';
-import 'utils/config.dart';
-import 'utils/theme.dart';
+import 'utils/utils.dart';
 
-class VLEPApp extends StatelessWidget {
+
+
+class VLEPApp extends StatefulWidget {
+  @override
+  _VLEPAppState createState() => _VLEPAppState();
+}
+
+class _VLEPAppState extends State<VLEPApp> {
+
+  bool isLogined = false;
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  void getUserInfo() async {
+    final user = await ShareUserManager().getUserEntity();
+    isLogined = user.token.isNotEmpty;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,9 +33,15 @@ class VLEPApp extends StatelessWidget {
       theme: VLEPTheme.theme,
       routes: {
         '/login': (context) => LoginPage(),
-        '/home': (context) => HomePage()
+        '/home': (context) => HomePage(),
+        '/task': (context) => MyTaskPage(),
+        '/scan': (context) => ScanCarPage(),
+        '/mass': (context) => MassLossPage(),
+        '/abnormal': (context) => AbNormalPage()
       },
-      home: VLEPConfig.isLogined ? HomePage() : LoginPage()
+      home: isLogined ? HomePage() : LoginPage()
     );
   }
 }
+
+

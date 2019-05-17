@@ -7,3 +7,4 @@
 export "user.dart";
 export 'notice.dart';
 export 'schedules.dart';
+export 'task.dart';

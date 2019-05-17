@@ -3,6 +3,7 @@ import 'dart:async';
 
 import '../../utils/utils.dart';
 import '../../services/services.dart';
+import '../../models/baseModel.dart';
 
 enum LoginType {
   password,
@@ -107,6 +108,9 @@ class __BodyState extends State<_Body> {
   }
   //登录 按键
   void _submitLogin() async {
+    final user = await ShareUserManager().getUserEntity();
+    LogInfo('token: ${user.token}');
+
     _formKey.currentState.save();
 
     if (_userName.length != 11) {
@@ -347,7 +351,10 @@ class __BodyState extends State<_Body> {
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: Image.asset('assets/images/login/bg@2x.png'),
+          child: Image.asset(
+            'assets/images/login/bg@2x.png',
+            fit: BoxFit.cover,
+          ),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

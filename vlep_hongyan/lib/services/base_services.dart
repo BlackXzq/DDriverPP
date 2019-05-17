@@ -43,10 +43,11 @@ class VLEPServices {
     }
   ) async {
 
-    var token = ShareUserManager.userEntity.token;
-    var userId = ShareUserManager.userEntity.userId;
-    var username = ShareUserManager.userEntity.username;
-    var sign = ShareUserManager.userEntity.token;
+    var user = await ShareUserManager().getUserEntity();
+    var token = user.token;
+    var userId = user.userId;
+    var username = user.username;
+    var sign = user.token;
     var time = (DateTime.now().millisecondsSinceEpoch).toString();
     var baseParams = Map<String, dynamic>();
     baseParams['reqData'] = data;
@@ -59,24 +60,23 @@ class VLEPServices {
     var response = Response();
 
     try {
-      print("try: ${baseParams}");
+      LogInfo("try: ${baseParams}");
       response = await _client.request(
         path,
         data: baseParams
       );
     } catch (e) {
-      print("catch: ${e.message}");
+      LogInfo("catch: ${e.message}");
       return ApiResponse(
         repCode: -1,
         repMsg: 'DioError: ${e.type} ${e.message}',
       );
     }
-    print("params: ${baseParams}");
     if (response.statusCode == HttpStatus.ok) {
-      print('success: ${response.data}');
+      LogInfo('success: ${response.data}');
       return ApiResponse.fromJson(response.data);
     } else {
-      print('error: ${response.statusCode.toString()}');
+      LogInfo('error: ${response.statusCode.toString()}');
       return ApiResponse(
         repCode: -1,
         repMsg: response.statusCode.toString(),
