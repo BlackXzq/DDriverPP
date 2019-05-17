@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/utils.dart';
+import '../../components/components.dart';
+import '../../models/models.dart';
 
 
 class MyTaskPage extends StatefulWidget {
@@ -160,6 +162,10 @@ class __BodyState extends State<_Body> {
   Widget _buildWaitSend(BuildContext context) {
     return Container(
       child: ListView(
+        children: <Widget>[
+          WaitSendTask(task: TaskEntity()),
+          WaitSendTask(task: TaskEntity())
+        ],
       ),
     );
   }
