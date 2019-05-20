@@ -66,10 +66,10 @@ class VLEPServices {
         data: baseParams
       );
     } catch (e) {
-      LogInfo("catch: ${e.message}");
+      LogInfo("catch: DioError: ${e.type} ${e.message}");
       return ApiResponse(
         repCode: -1,
-        repMsg: 'DioError: ${e.type} ${e.message}',
+        repMsg: '网络异常，请检查网络连接',
       );
     }
     if (response.statusCode == HttpStatus.ok) {

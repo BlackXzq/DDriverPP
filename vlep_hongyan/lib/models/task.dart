@@ -41,7 +41,7 @@ class TaskEntity {
     this.srcCity = '',
     this.subScheduleNumber = '',
     this.validateType = -1,
-    this.isOnOffSign = -1
+    this.isOnOffSign = -1,
   });
 
   factory TaskEntity.fromJson(Map<String, dynamic> json) =>
