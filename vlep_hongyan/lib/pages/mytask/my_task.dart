@@ -122,6 +122,7 @@ class _MyTaskPageState extends State<MyTaskPage> {
   Widget build(BuildContext context) {
     return  DefaultTabController(
       length: _tabs.length,
+      initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: VLEPTheme.primaryColor,
@@ -163,6 +164,7 @@ class __BodyState extends State<_Body> {
   var _isArrivedLoading = false;
   List<TaskEntity> _waitTaskList;
   List<TaskEntity> _sendTaskList;
+  List<TaskEntity> _arrivedTaskList;
 
   final _scrollController = ScrollController();
 
@@ -172,10 +174,15 @@ class __BodyState extends State<_Body> {
     super.initState();
 
     _waitTaskList = [];
+    _sendTaskList = [];
+    _arrivedTaskList = [];
 
     _scrollController.addListener(_scrollListener);
 
-//    _loadTaskList(recent: true);
+    _loadTaskList(driverStatus: '1');
+    _loadTaskList(driverStatus: '2');
+    _loadTaskList(driverStatus: '3');
+
   }
 
   @override
@@ -193,8 +200,10 @@ class __BodyState extends State<_Body> {
   }
 
   void _loadTaskList({
-    bool recent = true,
     String driverStatus = '1',
+    int pageNo = 1,
+    bool more = false,
+    bool tapEmpty = false,
     Completer<Null> completer
   }) {
 
@@ -227,22 +236,47 @@ class __BodyState extends State<_Body> {
 
     TaskRequest.getScheduls(
       driverStatus: driverStatus,
-      pageNo: 1,
+      pageNo: pageNo,
       onSucceed: (List<TaskEntity> list) {
-        _isWaitSendLoading = false;
-        _waitTaskList = list;
-        setState(() {});
-        if(list.length == 0) {
+        switch (driverStatus) {
+          case '2':
+            _isSendedLoading = false;
+            _sendTaskList = list;
+            setState(() {});
+            break;
+          case '3':
+            _isArrivedLoading = false;
+            _arrivedTaskList = list;
+            setState(() {});
+            break;
+          default:
+            _isWaitSendLoading = false;
+            _waitTaskList = list;
+            setState(() {});
+            break;
+        }
+        if(list.length == 0 && tapEmpty) {
           VLEPToast.showToast(msg: '暂无车辆信息');
         }
         completer?.complete();
       },
       onFailed: (notice) {
-       setState(() {
-         _isWaitSendLoading = false;
-       });
-       completer?.complete();
-       VLEPToast.showToast(msg: notice.message);
+        switch (driverStatus) {
+          case '2':
+            _isSendedLoading = false;
+            setState(() {});
+            break;
+          case '3':
+            _isArrivedLoading = false;
+            setState(() {});
+            break;
+          default:
+            _isWaitSendLoading = false;
+            setState(() {});
+            break;
+        }
+        completer?.complete();
+        VLEPToast.showToast(msg: notice.message);
       }
     );
   }
@@ -250,8 +284,8 @@ class __BodyState extends State<_Body> {
   Future<Null> _waitSendTaskeRfresh() {
     final completer = Completer<Null>();
     _loadTaskList(
-        recent: true,
-        completer: completer
+      driverStatus: '1',
+      completer: completer,
     );
 
     return completer.future;
@@ -262,8 +296,8 @@ class __BodyState extends State<_Body> {
     VLEPToast.showToast(msg: '调度单号： $parentId  选择状态: $isSelect');
   }
   //点击空白页面刷新
-  void _tapWaitListEmptyContent() {
-    _loadTaskList();
+  void tapWaitListEmptyContent({String status = '1'}) {
+    _loadTaskList(driverStatus: status, tapEmpty: true);
   }
 
   Widget _buildWaitSend(BuildContext context) {
@@ -282,7 +316,7 @@ class __BodyState extends State<_Body> {
             ),
           ),
         ),
-        _buildEmptyContent(),
+        _buildEmptyContent('1'),
         Visibility(
           visible: _isWaitSendLoading,
           child: Center(
@@ -293,14 +327,26 @@ class __BodyState extends State<_Body> {
     );
   }
 
-  Widget _buildEmptyContent() {
+  bool _checkShowEmpty(String status) {
+    if (status == '1') {
+      return _waitTaskList.length == 0;
+    } else if (status == '2') {
+      return _sendTaskList.length == 0;
+    } else {
+      return _arrivedTaskList.length == 0;
+    }
+  }
+
+  Widget _buildEmptyContent(String status) {
     return Visibility(
-      visible: _waitTaskList.length == 0,
+      visible: _checkShowEmpty(status),
       child: Center(
           child: Container(
               margin: EdgeInsets.only(bottom: 80),
               child: GestureDetector(
-                onTap: Feedback.wrapForTap(_tapWaitListEmptyContent, context),
+                onTap: Feedback.wrapForTap((){
+                  tapWaitListEmptyContent(status: status);
+                }, context),
                 child: Image.network(
                   'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/c027f16438d983b873a6b7f8444c57623061974312310001979.png',
                   width: 200,
@@ -313,6 +359,17 @@ class __BodyState extends State<_Body> {
   }
 
   Widget _buildSended(BuildContext context) {
+
+    return ListView(
+      children: <Widget>[
+        TaskSend(),
+        TaskSend(),
+        TaskSend(),
+        TaskSend(),
+        TaskSend()
+      ],
+    );
+
     return Stack(
       children: <Widget>[
         RefreshIndicator(
@@ -329,7 +386,7 @@ class __BodyState extends State<_Body> {
             ),
           ),
         ),
-        _buildEmptyContent(),
+        _buildEmptyContent('2'),
         Visibility(
           visible: _isWaitSendLoading,
           child: Center(
@@ -340,9 +397,45 @@ class __BodyState extends State<_Body> {
     );;
   }
 
+  void selectArrivedTask(String parentId) {
+    VLEPToast.showToast(msg: parentId);
+  }
+
+
+  Future<Null> _arrivedTaskeRfresh() {
+    final completer = Completer<Null>();
+    _loadTaskList(
+      driverStatus: '3',
+      completer: completer,
+    );
+
+    return completer.future;
+  }
+
   Widget _buildArrived(BuildContext context) {
-    return Container(
-      color: Color(0xfff2f2f2),
+    return Stack(
+      children: <Widget>[
+        RefreshIndicator(
+          onRefresh: _arrivedTaskeRfresh,
+          child: ListView.builder(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: _arrivedTaskList.length,
+            itemBuilder: (context, index) => ArrivedTask(
+              key: Key(_arrivedTaskList[index].parentScheduleNumber),
+              task: _arrivedTaskList[index],
+              tapSelectClick: selectArrivedTask,
+            ),
+          ),
+        ),
+        _buildEmptyContent('3'),
+        Visibility(
+          visible: _isWaitSendLoading,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        )
+      ],
     );
   }
 

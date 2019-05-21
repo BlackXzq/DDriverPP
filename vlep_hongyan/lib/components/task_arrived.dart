@@ -2,50 +2,35 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../utils/utils.dart';
 
-class WaitSendTask extends StatefulWidget {
+class ArrivedTask extends StatefulWidget {
 
   final TaskEntity task;
   Function tapSelectClick;
 
-  WaitSendTask({
+  ArrivedTask({
     Key key,
     @required this.task,
     this.tapSelectClick
   }) : super(key: key);
 
   @override
-  _WaitSendTaskState createState() => _WaitSendTaskState();
+  _ArrivedTaskState createState() => _ArrivedTaskState();
 }
 
-class _WaitSendTaskState extends State<WaitSendTask> {
-
-  bool _isSelect = false;
+class _ArrivedTaskState extends State<ArrivedTask> {
 
   void _tapContent() {
     if(widget.tapSelectClick != null) {
-      widget.tapSelectClick(widget.task.parentScheduleNumber, !_isSelect);
+      widget.tapSelectClick(widget.task.parentScheduleNumber);
     }
-    setState(() {
-      _isSelect = !_isSelect;
-    });
   }
 
   Widget _buildTaskNumWidget() {
     return Container(
-      padding:  EdgeInsets.only(left: 15, top: 15, right: 15),
-      height: 40,
-      child: GestureDetector(
-        onTap: Feedback.wrapForTap(_tapContent, context),
+        padding:  EdgeInsets.only(left: 15, top: 15, right: 15),
+        height: 40,
         child: Row(
           children: <Widget>[
-            Image.asset(
-              _isSelect
-                  ? 'assets/images/public/radio_select.png'
-                  : 'assets/images/public/radio_normal.png',
-              width: 20,
-              height: 20,
-              fit: BoxFit.cover,
-            ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
@@ -84,7 +69,6 @@ class _WaitSendTaskState extends State<WaitSendTask> {
             )
           ],
         ),
-      )
     );
   }
 
@@ -121,8 +105,8 @@ class _WaitSendTaskState extends State<WaitSendTask> {
           Text(
             '${widget.task.destCity}',
             style: TextStyle(
-              color: Color(0xFFF9A574),
-              fontSize: VLEPTheme.fontSizeNormal
+                color: Color(0xFFF9A574),
+                fontSize: VLEPTheme.fontSizeNormal
             ),
             textAlign: TextAlign.center,
           )
@@ -136,10 +120,10 @@ class _WaitSendTaskState extends State<WaitSendTask> {
     return Container(
       padding: EdgeInsets.only(left: 15, right: 15),
       child: Text(
-        '计划发车时间：${widget.task.shipmentDate}',
+        '到达时间：${widget.task.achieveTime}',
         style: TextStyle(
-          color: VLEPTheme.decColor,
-          fontSize: VLEPTheme.fontSizeNormal
+            color: VLEPTheme.decColor,
+            fontSize: VLEPTheme.fontSizeNormal
         ),
       ),
     );
@@ -155,30 +139,33 @@ class _WaitSendTaskState extends State<WaitSendTask> {
       padding: EdgeInsets.all(10),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(0.0),
-            topRight: Radius.circular(30),
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          ),
-          border: Border.all(color: Color(0xfff2f2f2), width: 1),
-          color: Colors.white
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(0.0),
+              topRight: Radius.circular(30),
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            border: Border.all(color: Color(0xfff2f2f2), width: 1),
+            color: Colors.white
         ),
         width: ScreenW,
-        child: Column(
-          children: <Widget>[
-            _buildTaskNumWidget(),
-            _buidlLine(),
-            Row(
-              children: <Widget>[
-                _buildCityWidget(),
-                Expanded(
-                  child: _buildTransInfoWidget(),
-                )
-              ],
-            ),
-          ],
-        ),
+        child: GestureDetector(
+          onTap: Feedback.wrapForTap(_tapContent, context),
+          child: Column(
+            children: <Widget>[
+              _buildTaskNumWidget(),
+              _buidlLine(),
+              Row(
+                children: <Widget>[
+                  _buildCityWidget(),
+                  Expanded(
+                    child: _buildTransInfoWidget(),
+                  )
+                ],
+              ),
+            ],
+          ),
+        )
       ),
     );
   }
