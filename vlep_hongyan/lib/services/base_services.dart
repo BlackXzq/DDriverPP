@@ -43,6 +43,9 @@ class VLEPServices {
     }
   ) async {
 
+    final response = await mapRequest(method, path, data: data);
+    return ApiResponse.fromJson(response);
+/*
     var user = await ShareUserManager().getUserEntity();
     var token = user.token;
     var userId = user.userId;
@@ -82,6 +85,56 @@ class VLEPServices {
         repMsg: response.statusCode.toString(),
       );
     }
+    */
+  }
+
+  Future<Map<String, dynamic>> mapRequest(
+      String method,
+      String path,
+      {
+        dynamic data
+      })
+  async {
+    var user = await ShareUserManager().getUserEntity();
+    var token = user.token;
+    var userId = user.userId;
+    var username = user.username;
+    var sign = user.token;
+    var time = (DateTime.now().millisecondsSinceEpoch).toString();
+    var baseParams = Map<String, dynamic>();
+    baseParams['reqData'] = data;
+    baseParams['token'] = token;
+    baseParams['userId'] = userId;
+    baseParams['username'] = username;
+    baseParams['sign'] = _getSign(data, time, token);
+    baseParams['time'] = time;
+    _client.options.method = method;
+    var response = Response();
+
+    try {
+      LogInfo("requestParams: ${baseParams}");
+      response = await _client.request(
+          path,
+          data: baseParams
+      );
+    } catch (e) {
+      LogInfo("catch: DioError: ${e.type} ${e.message}");
+      return {
+        'repCode': -1,
+        'repMsg': '网络异常，请检查网络连接',
+      };
+    }
+
+    if (response.statusCode == HttpStatus.ok) {
+      LogInfo('successResponse: ${response.data}');
+      return response.data;
+    } else {
+      LogInfo('error: ${response.statusCode.toString()}');
+      return {
+        'repCode': -1,
+        'repMsg': response.statusCode.toString(),
+      };
+    }
   }
 
   //生成签名
@@ -101,6 +154,10 @@ class VLEPServices {
 
   Future<ApiResponse> postForm(String path, {FormData data}) async {
     return request('POST', path, data: data);
+  }
+
+  Future<Map<String, dynamic>> MapPost(String path, {Map<String, dynamic> data}) async {
+    return mapRequest('POST', path, data: data);
   }
 
 }

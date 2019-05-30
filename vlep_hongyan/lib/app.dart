@@ -37,7 +37,9 @@ class _VLEPAppState extends State<VLEPApp> {
         '/task': (context) => MyTaskPage(),
         '/scan': (context) => ScanCarPage(),
         '/mass': (context) => MassLossPage(),
-        '/abnormal': (context) => AbNormalPage()
+        '/abnormal': (context) => AbNormalPage(),
+        '/oil': (context) => OilOrderListPage(),
+        '/add_Oil': (context) => AddOilOrderPage(),
       },
       home: isLogined ? HomePage() : LoginPage()
     );

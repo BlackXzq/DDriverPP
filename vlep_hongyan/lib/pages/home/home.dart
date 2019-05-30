@@ -68,6 +68,9 @@ class __BodyState extends State<_Body> {
       case '质损登记':
         routName = '/mass';
         break;
+      case '油票管理':
+        routName = '/oil';
+        break;
       default:
         routName = '';
     }
@@ -117,23 +120,63 @@ class __BodyState extends State<_Body> {
     );
   }
 
+  Widget _buildMyTaskItem() {
+    return GestureDetector(
+      onTap:() => _tapItem('我的任务'),
+      child: Column(
+        children: <Widget>[
+          Container(height: 80),
+          Stack(
+            alignment: Alignment(0, 0),
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: VLEPTheme.primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                height: 100,
+                width: 250,
+              ),
+              Image.network(
+                'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/985b5cd9741c63d881eb61b2cc37b7331896438121677722005.png',
+                width: 48,
+                height: 52,
+                fit: BoxFit.fill,
+              )
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            child: Text(
+              '我的任务',
+              style: TextStyle(
+                color: VLEPTheme.bodyColor,
+                fontSize: VLEPTheme.fontSizeNormal,
+              ),
+            )
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _buildMyTaskItem(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _buildItem(
-                  '我的任务',
-                  'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/985b5cd9741c63d881eb61b2cc37b7331896438121677722005.png',
-                ),
-                _buildItem(
                   '接车扫描',
                   'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/d710241d13d872af4371a80fb7e838968970605603745428239.png',
+                ),
+                _buildItem(
+                  '质损登记',
+                  'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/fae8822232301bcc43d65763a71ed8af1978143723713394200.png',
                 )
               ],
             ),
@@ -146,8 +189,8 @@ class __BodyState extends State<_Body> {
                   'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/2f6942b6b5ac4b47c1184916f7901ccf8767386284559932470.png',
                 ),
                 _buildItem(
-                  '质损登记',
-                  'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/fae8822232301bcc43d65763a71ed8af1978143723713394200.png',
+                  '油票管理',
+                  'https://s3.cn-north-1.amazonaws.com.cn/anjiplus-vlep/6ae32b160351a977b4284a6f99f91b7d371233642021143038.png',
                 )
               ],
             )
